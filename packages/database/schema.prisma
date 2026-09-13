@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model PlcTelemetry {
+  id        Int      @id @default(autoincrement())
+  timestamp DateTime @default(now())
+
+  inJamAir        Int @map("in_jam_air")
+  inJamLampuHidup Int @map("in_jam_lampu_hidup")
+  inJamLampuMati  Int @map("in_jam_lampu_mati")
+  inMenitAir      Int @map("in_menit_air")
+
+  outEc         Float @map("out_ec")
+  outKadarAir   Float @map("out_kadar_air")
+  outKalium     Float @map("out_kalium")
+  outKelembaban Float @map("out_kelembaban")
+  outNitrogen   Float @map("out_nitrogen")
+  outPh         Float @map("out_ph")
+  outPhospor    Float @map("out_phospor")
+  outSuhu       Float @map("out_suhu")
+
+  pupukToggle Int @map("pupuk_toggle")
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  password String
+}
+
+model IrrigationZone {
+  id            Int       @id @default(autoincrement())
+  name          String
+  status        String
+  lajuAlir      Float
+  targetDurasi  String
+  targetNpk     String
+  terakhirJalan DateTime?
+}
+
+model PLCSetting {
+  id                Int    @id @default(autoincrement())
+  ipAddress         String @map("ip_address")
+  heartbeatInterval Int    @map("heartbeat_interval")
+}
+
+model ActivityLog {
+  id        Int      @id @default(autoincrement())
+  timestamp DateTime @default(now())
+  category  String
+  activity  String
+  status    String
+}
+
+model PerformanceReport {
+  id              Int      @id @default(autoincrement())
+  date            DateTime @unique
+  estimasiHasil   Float    @map("estimasi_hasil")
+  penggunaanAir   Float    @map("penggunaan_air")
+  konsumsiNutrisi Float    @map("konsumsi_nutrisi")
+  waktuAktifCo2   Float    @map("waktu_aktif_co2")
+}
