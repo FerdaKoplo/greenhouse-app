@@ -30,13 +30,19 @@ model PlcTelemetry {
   outSuhu       Float @map("out_suhu")
 
   pupukToggle Int @map("pupuk_toggle")
+
+  activityLogs ActivityLog[]
+  report       PerformanceReport? @relation(fields: [reportId], references: [id])
+  reportId     Int?               @map("report_id")
 }
 
 model User {
   id       Int      @id @default(autoincrement())
-  email    String   @unique
+  name     String   @unique
   password String
   role     UserRole
+
+  activityLogs ActivityLog[]
 }
 
 model IrrigationZone {
@@ -61,6 +67,11 @@ model ActivityLog {
   category  String
   activity  String
   status    String
+
+  telemetry   PlcTelemetry? @relation(fields: [telemetryId], references: [id])
+  telemetryId Int?          @map("telemetry_id")
+  user        User?         @relation(fields: [userId], references: [id])
+  userId      Int?
 }
 
 model PerformanceReport {
@@ -70,4 +81,6 @@ model PerformanceReport {
   penggunaanAir   Float    @map("penggunaan_air")
   konsumsiNutrisi Float    @map("konsumsi_nutrisi")
   waktuAktifCo2   Float    @map("waktu_aktif_co2")
+
+  telemetryData PlcTelemetry[]
 }

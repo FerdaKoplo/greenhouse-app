@@ -1,5 +1,5 @@
 import express from "express";
-
+import auth from "./routers/auth.route";
 import cors from "cors";
 
 const app = express();
@@ -14,6 +14,8 @@ app.get("/api/health", (req, res) => {
     message: "Express Backend is successfully connected!",
   });
 });
+
+app.use("/api/auth", auth);
 
 app.listen(PORT, () => {
   console.log(`api:dev: Backend API running on http://localhost:${PORT}`);
