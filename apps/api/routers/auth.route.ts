@@ -7,6 +7,6 @@ const route = Router();
 const authService = new AuthService();
 const authController = new AuthController(authService);
 
-route.get("auth", authController.login.bind(authController));
+route.get("/auth", authController.login.bind(authController));
 
 export default route;

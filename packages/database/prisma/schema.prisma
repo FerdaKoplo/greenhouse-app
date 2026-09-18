@@ -53,6 +53,10 @@ model IrrigationZone {
   targetDurasi  String
   targetNpk     String
   terakhirJalan DateTime?
+
+  mulaiTanam  DateTime? @map("mulai_tanam")
+  targetPanen DateTime? @map("target_panen")
+  siklusDasar Int?      @map("siklus_dasar")
 }
 
 model PLCSetting {
