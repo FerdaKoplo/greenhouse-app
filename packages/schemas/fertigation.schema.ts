@@ -1,8 +1,10 @@
 import z from "zod";
 
+export const FaseTumbuhEnum = z.enum(["VEGETATIF", "GENERATIF"]);
+
 export const FertigationZoneSchema = z.object({
   id: z.number().int().positive(),
-  faseTumbuh: z.string().min(1, "Fase tumbuh tidak boleh kosong"),
+  faseTumbuh: FaseTumbuhEnum,
   dosisNitrogen: z.number().int().nonnegative("Dosis tidak boleh negatif"),
   dosisPosfor: z.number().int().nonnegative("Dosis tidak boleh negatif"),
   dosisKalium: z.number().int().nonnegative("Dosis tidak boleh negatif"),
@@ -15,9 +17,7 @@ export const FertigationZoneSchema = z.object({
 });
 
 export const UpdateDosisNpkSchema = z.object({
-  faseTumbuh: z.enum(["VEGETATIF", "GENERATIF"], {
-    error: "Fase tumbuh harus dipilih",
-  }),
+  faseTumbuh: FaseTumbuhEnum,
   dosisNitrogen: z.number().int().nonnegative("Dosis Nitrogen (N) harus diisi"),
   dosisPosfor: z.number().int().nonnegative("Dosis Fosfor (P) harus diisi"),
   dosisKalium: z.number().int().nonnegative("Dosis Kalium (K) harus diisi"),

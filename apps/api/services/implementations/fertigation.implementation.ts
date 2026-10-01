@@ -1,5 +1,6 @@
 import {
   FertigasiZoneDto,
+  FertigationZoneSchema,
   SetFertigasiDto,
   TankStatusResponseDto,
   UpdateDosisNpkDto,
@@ -23,7 +24,7 @@ export class FertigationService implements IFertigationService {
       );
     }
 
-    return fertigation;
+    return FertigationZoneSchema.parse(fertigation);
   }
 
   public async setFertigationZone(
@@ -39,63 +40,35 @@ export class FertigationService implements IFertigationService {
       },
     });
 
-    return upsertedFertigation;
+    return FertigationZoneSchema.parse(upsertedFertigation);
   }
 
   public async updateDosisNPK(
     zoneId: number,
     data: UpdateDosisNpkDto,
   ): Promise<FertigasiZoneDto> {
-    const existing = await db.fertigasiZone.findUnique({
-      where: { zonaId: zoneId },
-    });
-
-    if (!existing) {
-      throw new AppError(
-        "Konfigurasi fertigasi belum ada. Lakukan setup awal terlebih dahulu.",
-        400,
-      );
-    }
+    await this.getFertigationZone(zoneId);
 
     const updated = await db.fertigasiZone.update({
       where: { zonaId: zoneId },
-      data: {
-        faseTumbuh: data.faseTumbuh,
-        dosisNitrogen: data.dosisNitrogen,
-        dosisPosfor: data.dosisPosfor,
-        dosisKalium: data.dosisKalium,
-      },
+      data,
     });
 
-    return updated;
+    return FertigationZoneSchema.parse(updated);
   }
 
   public async updateTargetParameter(
     zoneId: number,
     data: UpdateTargetParameterDto,
   ): Promise<FertigasiZoneDto> {
-    const existing = await db.fertigasiZone.findUnique({
-      where: { zonaId: zoneId },
-    });
-
-    if (!existing) {
-      throw new AppError(
-        "Konfigurasi fertigasi belum ada. Lakukan setup awal terlebih dahulu.",
-        400,
-      );
-    }
+    await this.getFertigationZone(zoneId);
 
     const updated = await db.fertigasiZone.update({
       where: { zonaId: zoneId },
-      data: {
-        targetEcMin: data.targetEcMin,
-        targetEcMax: data.targetEcMax,
-        targetPhMin: data.targetPhMin,
-        targetPhMax: data.targetPhMax,
-      },
+      data,
     });
 
-    return updated;
+    return FertigationZoneSchema.parse(updated);
   }
 
   public async getTankStatus(): Promise<TankStatusResponseDto> {
@@ -107,9 +80,10 @@ export class FertigationService implements IFertigationService {
       return { tangkiN: 0, tangkiP: 0, tangkiK: 0, isLow: true };
     }
 
-    const tangkiN = (latestTelemetry as any).levelTangkiN || 0;
-    const tangkiP = (latestTelemetry as any).levelTangkiP || 0;
-    const tangkiK = (latestTelemetry as any).levelTangkiK || 0;
+    const telemetry = latestTelemetry as Record<string, unknown>;
+    const tangkiN = Number(telemetry.levelTangkiN) || 0;
+    const tangkiP = Number(telemetry.levelTangkiP) || 0;
+    const tangkiK = Number(telemetry.levelTangkiK) || 0;
 
     const isLow = tangkiN < 20 || tangkiP < 20 || tangkiK < 20;
 

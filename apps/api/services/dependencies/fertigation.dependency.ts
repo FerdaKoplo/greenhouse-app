@@ -20,9 +20,7 @@ export interface IFertigationService {
     zoneId: number,
     data: UpdateTargetParameterDto,
   ): Promise<FertigasiZoneDto>;
-
   getTankStatus(): Promise<TankStatusResponseDto>;
-
   startDosis(zoneId: number): Promise<void>;
   emergencyStop(zoneId: number): Promise<void>;
 }
