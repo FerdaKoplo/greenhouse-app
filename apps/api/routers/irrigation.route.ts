@@ -7,6 +7,7 @@ const route = Router();
 const irrigationService = new IrrigationService();
 const irrigationController = new IrrigationController(irrigationService);
 
+route.use(requireAuth);
 route.get("/zones/:zoneId/schedule", irrigationController.getJadwal);
 
 route.post("/zones/:zoneId/schedule", irrigationController.setJadwal);

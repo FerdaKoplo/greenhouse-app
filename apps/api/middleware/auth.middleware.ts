@@ -48,6 +48,6 @@ export const requireAuth = (
       return next(new AppError("Unauthorized: Token tidak valid", 401));
     }
 
-    next();
+    next(error);
   }
 };

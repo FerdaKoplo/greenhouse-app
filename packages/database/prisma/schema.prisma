@@ -57,6 +57,40 @@ model IrrigationZone {
   mulaiTanam  DateTime? @map("mulai_tanam")
   targetPanen DateTime? @map("target_panen")
   siklusDasar Int?      @map("siklus_dasar")
+
+  fertigasi FertigasiZone?
+  valves    ValveControl[]
+}
+
+model FertigasiZone {
+  id         Int    @id @default(autoincrement())
+  faseTumbuh String @map("fase_tumbuh")
+
+  dosisNitrogen Int @map("dosis_nitrogen")
+  dosisPosfor   Int @map("dosis_posfor")
+  dosisKalium   Int @map("dosis_kalium")
+
+  targetEcMin Float @map("target_ec_min")
+  targetEcMax Float @map("target_ec_max")
+  targetPhMin Float @map("target_ph_min")
+  targetPhMax Float @map("target_ph_max")
+
+  zona   IrrigationZone @relation(fields: [zonaId], references: [id])
+  zonaId Int            @unique @map("zona_id")
+
+  updatedAt DateTime @updatedAt @map("updated_at")
+}
+
+model ValveControl {
+  id     Int     @id @default(autoincrement())
+  name   String
+  type   String
+  isOpen Boolean @default(false) @map("is_open")
+
+  zona   IrrigationZone? @relation(fields: [zonaId], references: [id])
+  zonaId Int?            @map("zona_id")
+
+  updatedAt DateTime @updatedAt @map("updated_at")
 }
 
 model PLCSetting {
