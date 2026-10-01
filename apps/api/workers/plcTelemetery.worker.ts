@@ -28,6 +28,13 @@ export class PLCTelemeteryService implements IPlcTelemetryWorker {
 
   private async fetchAndSaveTelemetry(): Promise<void> {
     try {
+      const firstZone = await db.irrigationZone.findFirst();
+      if (!firstZone) {
+        console.log(
+          "Menunggu Zona Irigasi dibuat sebelum memulai simulasi telemetri...",
+        );
+        return;
+      }
       const simulatedPlcData = {
         inJamAir: 2,
         inJamLampuHidup: 12,
@@ -42,6 +49,7 @@ export class PLCTelemeteryService implements IPlcTelemetryWorker {
         outPhospor: parseFloat((Math.random() * (15 - 5) + 5).toFixed(2)),
         outSuhu: parseFloat((Math.random() * (35 - 25) + 25).toFixed(2)),
         pupukToggle: Math.random() > 0.5 ? 1 : 0,
+        zonaId: firstZone.id,
       };
 
       await db.plcTelemetry.create({

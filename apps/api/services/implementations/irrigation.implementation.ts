@@ -18,6 +18,7 @@ export class IrrigationService implements IIrrigationScheduleService {
         mulaiTanam: true,
         targetPanen: true,
         siklusDasar: true,
+        fertigasi: true,
       },
     });
 
@@ -39,6 +40,14 @@ export class IrrigationService implements IIrrigationScheduleService {
     }
 
     const finalHst = hariSetelahTanam > 0 ? hariSetelahTanam : 0;
+    let totalNpkUi = "Belum diatur";
+    if (zone.fertigasi) {
+      const total =
+        zone.fertigasi.dosisNitrogen +
+        zone.fertigasi.dosisPosfor +
+        zone.fertigasi.dosisKalium;
+      totalNpkUi = `${total} ppm`;
+    }
 
     return {
       zoneId: zone.id,
@@ -48,6 +57,7 @@ export class IrrigationService implements IIrrigationScheduleService {
       siklusDasar: zone.siklusDasar,
       hariSetelahTanam: finalHst,
       formatHstUi: `HARI KE - ${finalHst}`,
+      totalNpkUi: totalNpkUi,
     };
   }
 

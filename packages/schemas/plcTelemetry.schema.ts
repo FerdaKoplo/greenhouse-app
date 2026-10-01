@@ -16,6 +16,9 @@ export const PlcTelemetrySchema = z.object({
   outPhospor: z.number(),
   outSuhu: z.number(),
   pupukToggle: z.number().int().min(0).max(1),
+  zonaId: z.number().int().positive("ID Zona harus diisi"),
+
+  reportId: z.number().int().positive().nullable().optional(),
 });
 
 export const CreatePlcTelemetrySchema = PlcTelemetrySchema.omit({

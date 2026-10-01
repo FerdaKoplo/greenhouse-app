@@ -6,9 +6,8 @@ export const IrrigationZoneSchema = z.object({
   status: z.string().min(1, "Status tidak boleh kosong"),
   lajuAlir: z.number().nonnegative(),
   targetDurasi: z.string().min(1, "Target durasi harus diisi"),
-  targetNpk: z.string().min(1, "Target NPK harus diisi"),
-  terakhirJalan: z.coerce.date().nullable(),
 
+  terakhirJalan: z.coerce.date().nullable(),
   mulaiTanam: z.coerce.date().nullable().optional(),
   targetPanen: z.coerce.date().nullable().optional(),
   siklusDasar: z.number().int().nullable().optional(),
@@ -22,26 +21,20 @@ export const IrrigationScheduleResponseSchema = z.object({
   siklusDasar: z.number().nullable(),
   hariSetelahTanam: z.number(),
   formatHstUi: z.string(),
+  totalNpkUi: z.string().optional(),
 });
 
 export const SetJadwalSchema = z.object({
-  mulaiTanam: z.coerce.date(),
-  targetPanen: z.coerce.date(),
+  mulaiTanam: z.coerce.date({
+    error: "Tanggal mulai tanam harus diisi",
+  }),
+  targetPanen: z.coerce.date({
+    error: "Target panen harus diisi",
+  }),
   siklusDasar: z.number().int().positive("Siklus dasar harus lebih dari 0"),
 });
 
-// export const CreateIrrigationZoneSchema = IrrigationZoneSchema.omit({
-//   id: true,
-// });
-// export const UpdateIrrigationZoneSchema = IrrigationZoneSchema.partial();
-
 export type IrrigationZoneDto = z.infer<typeof IrrigationZoneSchema>;
-// export type CreateIrrigationZoneDto = z.infer<
-//   typeof CreateIrrigationZoneSchema
-// >;
-// export type UpdateIrrigationZoneDto = z.infer<
-//   typeof UpdateIrrigationZoneSchema
-// >;
 export type IrrigationScheduleResponseDTO = z.infer<
   typeof IrrigationScheduleResponseSchema
 >;
