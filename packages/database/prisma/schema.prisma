@@ -15,21 +15,24 @@ model PlcTelemetry {
   id        Int      @id @default(autoincrement())
   timestamp DateTime @default(now())
 
+  outEc         Float @map("out_ec")
+  outKadarAir   Float @map("out_kadar_air")
+  outKelembaban Float @map("out_kelembaban")
+  outPh         Float @map("out_ph")
+  outSuhu       Float @map("out_suhu")
+
+  outNitrogen Float @map("out_nitrogen")
+  outPhospor  Float @map("out_phospor")
+  outKalium   Float @map("out_kalium")
+
   inJamAir        Int @map("in_jam_air")
   inJamLampuHidup Int @map("in_jam_lampu_hidup")
   inJamLampuMati  Int @map("in_jam_lampu_mati")
   inMenitAir      Int @map("in_menit_air")
+  pupukToggle     Int @map("pupuk_toggle")
 
-  outEc         Float @map("out_ec")
-  outKadarAir   Float @map("out_kadar_air")
-  outKalium     Float @map("out_kalium")
-  outKelembaban Float @map("out_kelembaban")
-  outNitrogen   Float @map("out_nitrogen")
-  outPh         Float @map("out_ph")
-  outPhospor    Float @map("out_phospor")
-  outSuhu       Float @map("out_suhu")
-
-  pupukToggle Int @map("pupuk_toggle")
+  zona   IrrigationZone @relation(fields: [zonaId], references: [id])
+  zonaId Int            @map("zona_id")
 
   activityLogs ActivityLog[]
   report       PerformanceReport? @relation(fields: [reportId], references: [id])
@@ -58,8 +61,9 @@ model IrrigationZone {
   targetPanen DateTime? @map("target_panen")
   siklusDasar Int?      @map("siklus_dasar")
 
-  fertigasi FertigasiZone?
-  valves    ValveControl[]
+  fertigasi   FertigasiZone?
+  valves      ValveControl[]
+  telemetries PlcTelemetry[]
 }
 
 model FertigasiZone {
