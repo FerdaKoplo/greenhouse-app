@@ -1,22 +1,31 @@
 import { db } from "@greenhouse/database";
 import { IPlcTelemetryWorker } from "../services/dependencies/IplcTelemetryWorker.dependency";
+import { IActivityLogService } from "../services/dependencies/activityLog.dependency";
 
 export class PLCTelemeteryService implements IPlcTelemetryWorker {
   private pollingInterval: NodeJS.Timeout | null = null;
   private isRunning: boolean = false;
 
-  public start(intervalMs: number = 5000): void {
+  constructor(private readonly activityLogService: IActivityLogService) {}
+
+  public async start(intervalMs: number = 5000): Promise<void> {
     if (this.isRunning) return;
     this.isRunning = true;
 
     console.log(`PLC Telemetry Worker started (Interval: ${intervalMs}ms)`);
+
+    await this.activityLogService.createLog({
+      category: "SISTEM",
+      activity: "Sistem Telemetri PLC mulai berjalan",
+      status: "INFO",
+    });
 
     this.pollingInterval = setInterval(async () => {
       await this.fetchAndSaveTelemetry();
     }, intervalMs);
   }
 
-  public stop() {
+  public async stop(): Promise<void> {
     if (this.pollingInterval) {
       clearInterval(this.pollingInterval);
       this.pollingInterval = null;
@@ -24,6 +33,12 @@ export class PLCTelemeteryService implements IPlcTelemetryWorker {
 
     this.isRunning = false;
     console.log("PLC Telemetry Worker stopped.");
+
+    await this.activityLogService.createLog({
+      category: "SISTEM",
+      activity: "Sistem Telemetri PLC dihentikan",
+      status: "WARNING",
+    });
   }
 
   private async fetchAndSaveTelemetry(): Promise<void> {
@@ -57,6 +72,12 @@ export class PLCTelemeteryService implements IPlcTelemetryWorker {
       });
     } catch (error) {
       console.error("Failed to fetch data:", error);
+
+      await this.activityLogService.createLog({
+        category: "ERROR_SYSTEM",
+        activity: "Gagal menarik data dari PLC",
+        status: "ERROR",
+      });
     }
   }
 }

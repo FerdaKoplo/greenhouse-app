@@ -1,10 +1,12 @@
 import { Router } from "express";
 import { ValveControlService } from "../services/implementations/valve-control.implementation";
 import { ValveControlController } from "../controllers/valve-control.controller";
+import { ActivityLogService } from "../services/implementations/activity-log.implmentation";
 
 const route = Router();
 
-const valveControlService = new ValveControlService();
+const activityLogService = new ActivityLogService();
+const valveControlService = new ValveControlService(activityLogService);
 const valveControlController = new ValveControlController(valveControlService);
 
 route.get("/zones/:zoneId", valveControlController.getValvesByZone);

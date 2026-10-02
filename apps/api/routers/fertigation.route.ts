@@ -1,10 +1,12 @@
 import { Router } from "express";
 import { FertigationService } from "../services/implementations/fertigation.implementation";
 import { FertigationController } from "../controllers/fertigation.controller";
+import { ActivityLogService } from "../services/implementations/activity-log.implmentation";
 
 const route = Router();
 
-const fertigationService = new FertigationService();
+const activityLogService = new ActivityLogService();
+const fertigationService = new FertigationService(activityLogService);
 const fertigationController = new FertigationController(fertigationService);
 
 route.get(

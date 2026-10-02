@@ -10,8 +10,11 @@ import { IFertigationService } from "../dependencies/fertigation.dependency";
 
 import { AppError } from "../../libs/error.lib";
 import { db } from "@greenhouse/database";
+import { IActivityLogService } from "../dependencies/activityLog.dependency";
 
 export class FertigationService implements IFertigationService {
+  constructor(private readonly activityLogService: IActivityLogService) {}
+
   public async getFertigationZone(zoneId: number): Promise<FertigasiZoneDto> {
     const fertigation = await db.fertigasiZone.findUnique({
       where: { zonaId: zoneId },
@@ -40,6 +43,12 @@ export class FertigationService implements IFertigationService {
       },
     });
 
+    await this.activityLogService.createLog({
+      category: "KONFIGURASI_FERTIGASI",
+      activity: `Konfigurasi dasar fertigasi untuk Zona ${zoneId} berhasil diatur`,
+      status: "SUCCESS",
+    });
+
     return FertigationZoneSchema.parse(upsertedFertigation);
   }
 
@@ -54,6 +63,12 @@ export class FertigationService implements IFertigationService {
       data,
     });
 
+    await this.activityLogService.createLog({
+      category: "KONFIGURASI_FERTIGASI",
+      activity: `Dosis NPK Zona ${zoneId} diperbarui (${data.dosisNitrogen}N - ${data.dosisPosfor}P - ${data.dosisKalium}K, Fase: ${data.faseTumbuh})`,
+      status: "SUCCESS",
+    });
+
     return FertigationZoneSchema.parse(updated);
   }
 
@@ -66,6 +81,12 @@ export class FertigationService implements IFertigationService {
     const updated = await db.fertigasiZone.update({
       where: { zonaId: zoneId },
       data,
+    });
+
+    await this.activityLogService.createLog({
+      category: "KONFIGURASI_FERTIGASI",
+      activity: `Target EC dan pH untuk Zona ${zoneId} berhasil diperbarui`,
+      status: "SUCCESS",
     });
 
     return FertigationZoneSchema.parse(updated);
@@ -96,6 +117,12 @@ export class FertigationService implements IFertigationService {
       data: { isOpen: true },
     });
 
+    await this.activityLogService.createLog({
+      category: "AKTUATOR",
+      activity: `Injeksi otomatis dosis NPK untuk Zona ${zoneId} telah dimulai`,
+      status: "SUCCESS",
+    });
+
     console.log(`[ACTION] Memulai injeksi dosis NPK untuk Zona ${zoneId}`);
   }
 
@@ -103,6 +130,12 @@ export class FertigationService implements IFertigationService {
     await db.valveControl.updateMany({
       where: { zonaId: zoneId },
       data: { isOpen: false },
+    });
+
+    await this.activityLogService.createLog({
+      category: "AKTUATOR",
+      activity: `PENGHENTIAN DARURAT (Emergency Stop) dieksekusi untuk Zona ${zoneId}`,
+      status: "WARNING",
     });
 
     console.log(

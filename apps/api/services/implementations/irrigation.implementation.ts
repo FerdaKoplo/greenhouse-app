@@ -5,8 +5,11 @@ import {
 import { IIrrigationScheduleService } from "../dependencies/irrigation.dependency";
 import { db } from "@greenhouse/database";
 import { AppError } from "../../libs/error.lib";
+import { IActivityLogService } from "../dependencies/activityLog.dependency";
 
 export class IrrigationService implements IIrrigationScheduleService {
+  constructor(private readonly activityLogService: IActivityLogService) {}
+
   public async getJadwalZona(
     zoneId: number,
   ): Promise<IrrigationScheduleResponseDTO> {
@@ -89,6 +92,12 @@ export class IrrigationService implements IIrrigationScheduleService {
       },
     });
 
+    await this.activityLogService.createLog({
+      category: "JADWAL_IRIGASI",
+      activity: `Jadwal irigasi untuk '${existingZone.name}' berhasil diatur (Siklus: ${data.siklusDasar} Menit)`,
+      status: "SUCCESS",
+    });
+
     return this.getJadwalZona(zoneId);
   }
 
@@ -110,6 +119,12 @@ export class IrrigationService implements IIrrigationScheduleService {
         targetPanen: null,
         siklusDasar: null,
       },
+    });
+
+    await this.activityLogService.createLog({
+      category: "JADWAL_IRIGASI",
+      activity: `Jadwal irigasi untuk '${existingZone.name}' berhasil di-reset`,
+      status: "SUCCESS",
     });
 
     return this.getJadwalZona(zoneId);

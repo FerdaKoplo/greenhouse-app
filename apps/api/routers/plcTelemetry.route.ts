@@ -1,9 +1,12 @@
 import { Router } from "express";
 import { PLCTelemeteryService } from "../workers/plcTelemetery.worker";
 import { PLCTelemeteryController } from "../controllers/plcTelemetery.controller";
+import { ActivityLogService } from "../services/implementations/activity-log.implmentation";
 
 const route = Router();
-const plcTelemeryService = new PLCTelemeteryService();
+
+const activityLogService = new ActivityLogService();
+const plcTelemeryService = new PLCTelemeteryService(activityLogService);
 const plcTelemeteryController = new PLCTelemeteryController(plcTelemeryService);
 
 route.get("/telemetry/latest", plcTelemeteryController.getLatestTelemetry);

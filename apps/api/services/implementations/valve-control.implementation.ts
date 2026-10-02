@@ -8,8 +8,11 @@ import {
 import { IValveControlService } from "../dependencies/valve-control.dependency";
 import { db } from "@greenhouse/database";
 import { AppError } from "../../libs/error.lib";
+import { IActivityLogService } from "../dependencies/activityLog.dependency";
 
 export class ValveControlService implements IValveControlService {
+  constructor(private readonly activityLogService: IActivityLogService) {}
+
   public async getValvesByZone(zoneId: number): Promise<ValveControlDto[]> {
     const valves = await db.valveControl.findMany({
       where: { zonaId: zoneId },
@@ -36,6 +39,12 @@ export class ValveControlService implements IValveControlService {
       data,
     });
 
+    await this.activityLogService.createLog({
+      category: "KONFIGURASI_VALVE",
+      activity: `Valve '${newValve.name}' (Tipe: ${newValve.type}) berhasil dibuat`,
+      status: "SUCCESS",
+    });
+
     return ValveControlSchema.parse(newValve);
   }
 
@@ -50,6 +59,12 @@ export class ValveControlService implements IValveControlService {
       data,
     });
 
+    await this.activityLogService.createLog({
+      category: "KONFIGURASI_VALVE",
+      activity: `Data Valve '${updatedValve.name}' (ID: ${id}) berhasil diperbarui`,
+      status: "SUCCESS",
+    });
+
     return ValveControlSchema.parse(updatedValve);
   }
 
@@ -57,7 +72,7 @@ export class ValveControlService implements IValveControlService {
     id: number,
     data: ToggleValveDto,
   ): Promise<ValveControlDto> {
-    await this.getValveById(id);
+    const valve = await this.getValveById(id);
 
     const toggledValve = await db.valveControl.update({
       where: { id },
@@ -66,14 +81,26 @@ export class ValveControlService implements IValveControlService {
       },
     });
 
+    await this.activityLogService.createLog({
+      category: "AKTUATOR",
+      activity: `Valve '${valve.name}' (ID: ${id}) telah ${data.isOpen ? "dibuka" : "ditutup"}`,
+      status: "SUCCESS",
+    });
+
     return ValveControlSchema.parse(toggledValve);
   }
 
   public async deleteValve(id: number): Promise<void> {
-    await this.getValveById(id);
+    const valve = await this.getValveById(id);
 
     await db.valveControl.delete({
       where: { id },
+    });
+
+    await this.activityLogService.createLog({
+      category: "KONFIGURASI_VALVE",
+      activity: `Valve '${valve.name}' (ID: ${id}) berhasil dihapus`,
+      status: "SUCCESS",
     });
   }
 }
