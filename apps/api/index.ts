@@ -3,6 +3,7 @@ import auth from "./routers/auth.route";
 import zones from "./routers/irrigation.route";
 import fertigations from "./routers/fertigation.route";
 import valveControl from "./routers/valve-control.route";
+import plcSetting from "./routers/plcSetting.route";
 
 import cors from "cors";
 import { requireAuth } from "./middleware/auth.middleware";
@@ -25,6 +26,7 @@ app.use("/api/auth", auth);
 app.use("/api/irrigation", requireAuth, zones);
 app.use("/api/fertigation", requireAuth, fertigations);
 app.use("/api/valve-control", requireAuth, valveControl);
+app.use("/api/plc-setting", requireAuth, plcSetting);
 
 app.listen(PORT, () => {
   console.log(`api:dev: Backend API running on http://localhost:${PORT}`);
