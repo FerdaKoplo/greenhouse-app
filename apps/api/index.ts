@@ -6,6 +6,7 @@ import valveControl from "./routers/valve-control.route";
 import plcSetting from "./routers/plcSetting.route";
 import performanceReport from "./routers/performance-report.route";
 
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import { requireAuth } from "./middleware/auth.middleware";
 import { initCronJobs } from "./jobs/activity-log-expiration.job";
@@ -15,6 +16,7 @@ const PORT = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 
 app.get("/api/health", (req, res) => {
   res.json({

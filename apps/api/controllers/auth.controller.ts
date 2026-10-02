@@ -19,6 +19,13 @@ export class AuthController {
 
     const result = await this.authService.login(name, password);
 
+    res.cookie("token", result.token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+
     return ApiResponse.success(res, 200, "Login berhasil", result);
   });
 }
