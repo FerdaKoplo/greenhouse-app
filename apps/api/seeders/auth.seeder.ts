@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import { db } from "@greenhouse/database";
 
-async function main() {
+export const seedUsers = async () => {
   const saltRounds = 10;
 
   const hashedAdminPassword = await bcrypt.hash("admin1234", saltRounds);
@@ -29,13 +29,4 @@ async function main() {
 
   console.log("Seeding selesai:");
   console.log({ admin: admin.name, operator: operator.name });
-}
-
-main()
-  .catch((e) => {
-    console.error("Gagal melakukan seeding:", e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await db.$disconnect();
-  });
+};

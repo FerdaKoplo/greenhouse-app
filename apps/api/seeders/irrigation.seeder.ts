@@ -1,6 +1,6 @@
 import { db } from "@greenhouse/database";
 
-async function main() {
+export const seedIrrigationZones = async () => {
   const zone1 = await db.irrigationZone.upsert({
     where: { id: 1 },
     update: {},
@@ -35,13 +35,4 @@ async function main() {
 
   console.log("Seeding IrrigationZone selesai:");
   console.log({ zone1: zone1.name, zone2: zone2.name });
-}
-
-main()
-  .catch((e) => {
-    console.error("Gagal melakukan seeding:", e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await db.$disconnect();
-  });
+};
