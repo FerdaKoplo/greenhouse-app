@@ -101,10 +101,9 @@ export class FertigationService implements IFertigationService {
       return { tangkiN: 0, tangkiP: 0, tangkiK: 0, isLow: true };
     }
 
-    const telemetry = latestTelemetry as Record<string, unknown>;
-    const tangkiN = Number(telemetry.levelTangkiN) || 0;
-    const tangkiP = Number(telemetry.levelTangkiP) || 0;
-    const tangkiK = Number(telemetry.levelTangkiK) || 0;
+    const tangkiN = Number(latestTelemetry.outNitrogen) || 0;
+    const tangkiP = Number(latestTelemetry.outPhospor) || 0;
+    const tangkiK = Number(latestTelemetry.outKalium) || 0;
 
     const isLow = tangkiN < 20 || tangkiP < 20 || tangkiK < 20;
 

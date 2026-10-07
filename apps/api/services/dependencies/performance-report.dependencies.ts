@@ -1,8 +1,14 @@
+// import {
+//   CreatePerformanceReportDto,
+//   PerformanceReportDto,
+//   UpdatePerformanceReportDto,
+// } from ;
+
 import {
   CreatePerformanceReportDto,
   PerformanceReportDto,
   UpdatePerformanceReportDto,
-} from "@greenhouse/schemas/performanceReport.schema";
+} from "@greenhouse/schemas";
 
 export interface IPerformanceReportService {
   getReports(limit?: number): Promise<PerformanceReportDto[]>;

@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express from "express";
 import auth from "./routers/auth.route";
 import zones from "./routers/irrigation.route";
@@ -5,7 +6,7 @@ import fertigations from "./routers/fertigation.route";
 import valveControl from "./routers/valve-control.route";
 import plcSetting from "./routers/plcSetting.route";
 import performanceReport from "./routers/performance-report.route";
-
+import telemetry from "./routers/plcTelemetry.route";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { requireAuth } from "./middleware/auth.middleware";
@@ -28,6 +29,7 @@ app.get("/api/health", (req, res) => {
 app.use("/api/auth", auth);
 app.use("/api/irrigation", requireAuth, zones);
 app.use("/api/fertigation", requireAuth, fertigations);
+app.use("/api/plc-telemetry", requireAuth, telemetry);
 app.use("/api/valve-control", requireAuth, valveControl);
 app.use("/api/plc-setting", requireAuth, plcSetting);
 app.use("/api/performance-report", requireAuth, performanceReport);

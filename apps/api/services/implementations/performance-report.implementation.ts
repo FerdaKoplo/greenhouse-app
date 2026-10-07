@@ -3,7 +3,7 @@ import {
   PerformanceReportDto,
   PerformanceReportSchema,
   UpdatePerformanceReportDto,
-} from "@greenhouse/schemas/performanceReport.schema";
+} from "@greenhouse/schemas";
 import { IPerformanceReportService } from "../dependencies/performance-report.dependencies";
 import { IActivityLogService } from "../dependencies/activityLog.dependency";
 import { db } from "@greenhouse/database";

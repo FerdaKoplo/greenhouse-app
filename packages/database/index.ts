@@ -6,7 +6,9 @@ import { Pool } from "pg";
 
 dotenv.config({ path: path.resolve(__dirname, ".env") });
 
-const connectionString = process.env.DATABASE_URL;
+const connectionString =
+  process.env.DATABASE_URL ||
+  "postgresql://admin:password@localhost:5433/greenhouse";
 
 const pool = new Pool({ connectionString });
 const adapter = new PrismaPg(pool);

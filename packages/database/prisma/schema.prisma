@@ -6,6 +6,11 @@ datasource db {
   provider = "postgresql"
 }
 
+enum FaseTumbuh {
+  VEGETATIF
+  GENERATIF
+}
+
 enum UserRole {
   ADMIN
   OPERATOR
@@ -67,8 +72,8 @@ model IrrigationZone {
 }
 
 model FertigasiZone {
-  id         Int    @id @default(autoincrement())
-  faseTumbuh String @map("fase_tumbuh")
+  id         Int        @id @default(autoincrement())
+  faseTumbuh FaseTumbuh @map("fase_tumbuh")
 
   dosisNitrogen Int @map("dosis_nitrogen")
   dosisPosfor   Int @map("dosis_posfor")

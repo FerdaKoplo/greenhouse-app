@@ -8,7 +8,7 @@ import z from "zod";
 import {
   CreatePerformanceReportSchema,
   UpdatePerformanceReportSchema,
-} from "@greenhouse/schemas/performanceReport.schema";
+} from "@greenhouse/schemas";
 
 export class PerformanceReportController {
   constructor(
